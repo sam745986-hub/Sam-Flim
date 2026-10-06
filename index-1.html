@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAM FILM — Movies & Series</title>
+<style>
+:root{
+  --bg:#090a0d; --card:#12151b; --card2:#181c24; --text:#f5f5f5;
+  --muted:#9da4b0; --accent:#e50914; --border:#242a34;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+header{position:sticky;top:0;z-index:10;background:rgba(9,10,13,.96);border-bottom:1px solid var(--border);backdrop-filter:blur(10px)}
+.nav{max-width:1150px;margin:auto;padding:14px 18px;display:flex;align-items:center;gap:18px}
+.logo{font-size:25px;font-weight:900;letter-spacing:1px;color:#fff}
+.logo span{color:var(--accent)}
+.search{flex:1;max-width:500px;margin-left:auto}
+.search input{width:100%;padding:12px 15px;border-radius:24px;border:1px solid var(--border);background:#11141a;color:#fff;outline:none}
+.hero{max-width:1150px;margin:0 auto;padding:34px 18px 20px}
+.hero-box{padding:30px;border-radius:22px;background:linear-gradient(135deg,#211014,#11151d 55%,#15151b);border:1px solid #30242a}
+.hero h1{font-size:clamp(30px,6vw,52px);margin:0 0 8px}
+.hero p{color:var(--muted);max-width:650px;line-height:1.6;margin:0 0 18px}
+.btn{display:inline-block;padding:11px 16px;border-radius:10px;text-decoration:none;font-weight:700;border:1px solid var(--border);color:#fff;background:#171b23}
+.btn.primary{background:var(--accent);border-color:var(--accent)}
+.filters{max-width:1150px;margin:auto;padding:8px 18px 20px;display:flex;gap:8px;overflow:auto}
+.filter{white-space:nowrap;border:1px solid var(--border);background:var(--card);color:#ddd;border-radius:20px;padding:9px 14px;cursor:pointer}
+.filter.active{background:var(--accent);border-color:var(--accent);color:#fff}
+main{max-width:1150px;margin:auto;padding:0 18px 40px}
+.section-title{display:flex;align-items:center;justify-content:space-between;margin:14px 0}
+.section-title h2{margin:0;font-size:22px}
+.count{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:.2s}
+.card:hover{transform:translateY(-3px);border-color:#3b424f}
+.poster{aspect-ratio:2/3;display:flex;align-items:flex-end;padding:14px;background:
+linear-gradient(160deg,#3b0f16,#12151d 58%,#090a0d);position:relative}
+.poster .mark{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.55);padding:5px 8px;border-radius:8px;font-size:11px}
+.poster h3{margin:0;font-size:23px;line-height:1.05}
+.info{padding:12px}
+.meta{color:var(--muted);font-size:12px;margin:5px 0 10px}
+.rating{color:#ffd35a;font-size:13px;margin-bottom:10px}
+.actions{display:flex;gap:7px}
+.actions a{flex:1;text-align:center;padding:9px 5px;border-radius:8px;font-size:12px;text-decoration:none;background:#20252e;color:#fff}
+.actions a:first-child{background:var(--accent)}
+.notice{margin-top:30px;padding:15px;border:1px solid var(--border);border-radius:12px;color:var(--muted);font-size:13px;line-height:1.5}
+@media(max-width:850px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.nav{flex-wrap:wrap}.search{order:3;flex-basis:100%;max-width:none}.grid{grid-template-columns:repeat(2,1fr);gap:12px}.hero{padding-top:20px}.hero-box{padding:22px}.poster h3{font-size:20px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <div class="logo">SAM <span>FILM</span></div>
+    <div class="search"><input id="search" type="search" placeholder="মুভি খুঁজুন..." oninput="render()"></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-box">
+    <h1>Movie Night Starts Here 🎬</h1>
+    <p>SAM FILM — মুভি ও সিরিজের তথ্য, রেটিং এবং অফিসিয়াল ট্রেলার এক জায়গায়।</p>
+    <a class="btn primary" href="#movies">Explore Movies</a>
+  </div>
+</section>
+
+<div class="filters">
+  <button class="filter active" onclick="setGenre('All',this)">সব</button>
+  <button class="filter" onclick="setGenre('Action',this)">Action</button>
+  <button class="filter" onclick="setGenre('Thriller',this)">Thriller</button>
+  <button class="filter" onclick="setGenre('Comedy',this)">Comedy</button>
+  <button class="filter" onclick="setGenre('Drama',this)">Drama</button>
+  <button class="filter" onclick="setGenre('Malayalam',this)">Malayalam</button>
+</div>
+
+<main id="movies">
+  <div class="section-title"><h2>Featured Movies</h2><span class="count" id="count"></span></div>
+  <div class="grid" id="grid"></div>
+  <div class="notice">নোট: এই সাইটে কেবল অফিসিয়াল ট্রেলার/বৈধ দেখার লিংক ব্যবহার করো। কপিরাইটযুক্ত সিনেমার অবৈধ কপি বা পাইরেটেড স্ট্রিমিং লিংক এখানে যোগ করা উচিত নয়।</div>
+</main>
+
+<script>
+const movies=[
+ {t:"Kaapa",y:"2022",g:["Action","Thriller","Malayalam"],r:"5.8",desc:"Malayalam action crime thriller directed by Shaji Kailas.",tr:"https://www.youtube.com/watch?v=hXw2FnehuD8",watch:"https://www.netflix.com/title/81602972"},
+ {t:"Aavesham",y:"2024",g:["Action","Comedy","Malayalam"],r:"7.8",tr:"https://www.youtube.com/results?search_query=Aavesham+official+trailer"},
+ {t:"Premalu",y:"2024",g:["Comedy","Drama","Malayalam"],r:"7.8",tr:"https://www.youtube.com/results?search_query=Premalu+official+trailer"},
+ {t:"Vikram",y:"2022",g:["Action","Thriller"],r:"8.3",tr:"https://www.youtube.com/results?search_query=Vikram+2022+official+trailer"},
+ {t:"Leo",y:"2023",g:["Action","Thriller"],r:"7.2",tr:"https://www.youtube.com/results?search_query=Leo+2023+official+trailer"},
+ {t:"Jailer",y:"2023",g:["Action","Comedy"],r:"7.0",tr:"https://www.youtube.com/results?search_query=Jailer+official+trailer"},
+ {t:"Salaar",y:"2023",g:["Action","Drama"],r:"6.5",tr:"https://www.youtube.com/results?search_query=Salaar+official+trailer"},
+ {t:"Kishkindha Kaandam",y:"2024",g:["Thriller","Drama","Malayalam"],r:"8.1",tr:"https://www.youtube.com/results?search_query=Kishkindha+Kaandam+official+trailer"},
+ {t:"ARM",y:"2024",g:["Action","Drama","Malayalam"],r:"7.2",tr:"https://www.youtube.com/results?search_query=ARM+2024+Malayalam+official+trailer"},
+ {t:"Turbo",y:"2024",g:["Action","Comedy","Malayalam"],r:"5.1",tr:"https://www.youtube.com/results?search_query=Turbo+2024+Malayalam+official+trailer"}
+];
+let genre="All";
+function setGenre(g,el){
+  genre=g;
+  document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
+  el.classList.add("active"); render();
+}
+function render(){
+  const q=document.getElementById("search").value.toLowerCase().trim();
+  const list=movies.filter(m=>(genre==="All"||m.g.includes(genre)) && m.t.toLowerCase().includes(q));
+  document.getElementById("count").textContent=list.length+"টি মুভি";
+  document.getElementById("grid").innerHTML=list.map(m=>`
+    <article class="card">
+      <div class="poster">
+        <span class="mark">${m.y}</span>
+        <h3>${m.t}</h3>
+      </div>
+      <div class="info">
+        <div class="meta">${m.g.join(" • ")}</div>
+        <div class="rating">★ ${m.r}</div>
+        <div class="actions">
+          <a href="${m.tr}" target="_blank" rel="noopener">Trailer</a>
+          ${m.watch?`<a href="${m.watch}" target="_blank" rel="noopener">Watch</a>`:`<a href="#" onclick="alert('এই মুভির বৈধ watch link পরে যোগ করা যাবে।');return false;">Info</a>`}
+        </div>
+      </div>
+    </article>`).join("");
+}
+render();
+</script>
+</body>
+</html>
