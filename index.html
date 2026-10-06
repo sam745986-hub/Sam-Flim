@@ -7,4 +7,15 @@
 <section class="section" id="about"><h2>ℹ️ About SAM FILM</h2><p style="color:#aaa;line-height:1.7">SAM FILM একটি movie discovery website template। পোস্টার, synopsis, rating, trailer এবং বৈধ streaming source যোগ করে এটি বাস্তব সাইটে ব্যবহার করা যাবে।</p><div class="notice">⚠️ কপিরাইটযুক্ত মুভি অনুমতি ছাড়া হোস্ট বা বিতরণ করো না। অফিসিয়াল/লাইসেন্সকৃত সোর্স ব্যবহার করো।</div></section></main>
 <footer class="footer">© 2026 SAM FILM • Movie Discovery Platform</footer>
 <div id="modal" class="modal"><div class="box"><button class="close" id="close">×</button><div id="detail"></div></div></div>
-<script>const movies=[['Inception','2010','Action','⭐ 8.8'],['Interstellar','2014','Drama','⭐ 8.7'],['The Dark Knight','2008','Action','⭐ 9.0'],['Parasite','2019','Thriller','⭐ 8.5'],['3 Idiots','2009','Comedy','⭐ 8.4'],['Hawa','2022','Bangla','⭐ 8.0'],['Joker','2019','Drama','⭐ 8.3'],['Avengers: Endgame','2019','Action','⭐ 8.4'],['Drishyam','2015','Thriller','⭐ 8.2'],['Aynabaji','2016','Bangla','⭐ 8.0']];let active='All';const grid=document.querySelector('#grid'),empty=document.querySelector('#empty');function render(){const q=document.querySelector('#search').value.toLowerCase();const list=movies.filter(m=>(active==='All'||m[2]===active)&&m[0].toLowerCase().includes(q));grid.innerHTML=list.map((m,i)=>`<article class="card" onclick="openMovie(${movies.indexOf(m)})"><div class="poster">${m[0]}</div><div class="info"><div class="title">${m[0]}</div><div class="meta">${m[1]} • ${m[2]} • <span class="badge">${m[3]}</span></div></div></article>`).join('');empty.hidden=list.length>0}document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));b.classList.add('active');active=b.dataset.filter;render()});document.querySelector('#search').oninput=render;function openMovie(i){const m=movies[i];document.querySelector('#detail').innerHTML=`<div style="color:#ff4040;font-weight:bold">SAM FILM</div><h2>${m[0]}</h2><p style="color:#aaa">${m[1]} • ${m[2]} • ${m[3]}</p><p style="color:#ccc;line-height:1.7">এই জায়গায় মুভির synopsis, cast, trailer এবং বৈধ streaming source-এর তথ্য যোগ করতে পারবে।</p><a class="btn primary" href="#" onclick="return false">Official Trailer</a>`;document.querySelector('#modal').classList.add('show')}document.querySelector('#close').onclick=()=>document.querySelector('#modal').classList.remove('show');document.querySelector('#modal').onclick=e=>{if(e.target.id==='modal')e.currentTarget.classList.remove('show')};render();</script></body></html>
+const movies=[
+['Kaapa','2022','Action','⭐ 5.8'],
+['Aavesham','2024','Action','⭐ 7.8'],
+['Premalu','2024','Comedy','⭐ 7.8'],
+['Vikram','2022','Action','⭐ 8.3'],
+['Leo','2023','Action','⭐ 7.2'],
+['Jailer','2023','Action','⭐ 7.0'],
+['Salaar','2023','Action','⭐ 6.5'],
+['Kishkindha Kaandam','2024','Thriller','⭐ 8.1'],
+['ARM','2024','Action','⭐ 7.2'],
+['Turbo','2024','Action','⭐ 5.1']
+];
