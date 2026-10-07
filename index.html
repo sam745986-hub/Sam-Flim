@@ -9,16 +9,25 @@
 href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
 
 <style>
-*{box-sizing:border-box}
 
-body{
+*{
+box-sizing:border-box
+}
+
+html,body{
 margin:0;
+padding:0;
+width:100%;
+height:100%;
 font-family:Arial,sans-serif;
 background:#071019;
 color:#fff
 }
 
-button,input,select,textarea{
+button,
+input,
+select,
+textarea{
 font:inherit
 }
 
@@ -26,9 +35,9 @@ button{
 border:0;
 border-radius:9px;
 padding:10px 13px;
-background:#1b2733;
-color:white;
-font-weight:bold;
+background:#1d2a36;
+color:#fff;
+font-weight:700;
 cursor:pointer
 }
 
@@ -36,25 +45,104 @@ button.green{
 background:#16a34a
 }
 
+button.blue{
+background:#2563eb
+}
+
 button.red{
 background:#dc2626
 }
 
-header{
-height:62px;
-background:#0d1720;
-border-bottom:1px solid #263544;
+button.orange{
+background:#d97706
+}
+
+button:active{
+transform:scale(.97)
+}
+
+/* LOGIN */
+
+#loginScreen{
+position:fixed;
+inset:0;
+z-index:9999;
+background:#071019;
 display:flex;
 align-items:center;
-padding:0 12px;
-gap:10px;
-position:relative;
-z-index:1500
+justify-content:center;
+padding:15px
+}
+
+#loginScreen.hide{
+display:none
+}
+
+.loginBox{
+width:min(390px,100%);
+background:#101c27;
+border:1px solid #2b3b4a;
+border-radius:18px;
+padding:22px;
+box-shadow:0 15px 40px #0009
+}
+
+.loginBox h1{
+margin:0 0 7px;
+font-size:25px
+}
+
+.loginBox h1 span{
+color:#22c55e
+}
+
+.loginBox p{
+color:#9ca9b6;
+font-size:13px
+}
+
+.loginBox input{
+width:100%;
+padding:12px;
+margin:5px 0;
+background:#071119;
+border:1px solid #2b3b4a;
+border-radius:9px;
+color:#fff;
+outline:none
+}
+
+.loginBox button{
+width:100%;
+margin-top:8px
+}
+
+#loginMsg{
+font-size:12px;
+color:#f59e0b;
+margin-top:10px
+}
+
+/* HEADER */
+
+header{
+height:60px;
+position:fixed;
+top:0;
+left:0;
+right:0;
+z-index:2000;
+background:#0d1720f5;
+border-bottom:1px solid #293947;
+display:flex;
+align-items:center;
+gap:8px;
+padding:8px 10px
 }
 
 .logo{
-font-size:18px;
 font-weight:900;
+font-size:18px;
 white-space:nowrap
 }
 
@@ -69,35 +157,44 @@ max-width:450px
 
 .search input{
 width:100%;
-background:#101c27;
-border:1px solid #2a3a49;
-color:white;
-padding:10px 14px;
+padding:9px 13px;
 border-radius:22px;
+border:1px solid #2b3b4a;
+background:#101c27;
+color:#fff;
 outline:none
 }
 
+/* MAP */
+
 #map{
-height:calc(100vh - 62px);
-width:100%
+position:fixed;
+top:60px;
+bottom:0;
+left:0;
+right:0;
+z-index:1
 }
 
+/* DASHBOARD */
+
 .dashboard{
-position:absolute;
-z-index:1200;
-top:75px;
+position:fixed;
+z-index:1500;
+top:72px;
 left:10px;
-width:320px;
+width:330px;
 max-width:calc(100% - 20px);
-background:#0d1720f2;
+background:#0c1720f2;
 border:1px solid #2b3b4a;
-border-radius:14px;
+border-radius:15px;
 padding:12px;
-box-shadow:0 10px 30px #0008
+box-shadow:0 12px 35px #0009
 }
 
 .dashboard h3{
-margin:0 0 10px
+margin:0 0 10px;
+font-size:17px
 }
 
 .stats{
@@ -107,10 +204,10 @@ gap:6px
 }
 
 .stat{
-background:#15222d;
-border:1px solid #2a3947;
+background:#14222d;
+border:1px solid #2a3a48;
 border-radius:9px;
-padding:8px;
+padding:7px;
 text-align:center
 }
 
@@ -120,216 +217,261 @@ font-size:18px
 }
 
 .stat small{
-color:#9ca9b6
+font-size:10px;
+color:#9eabb7
 }
 
-.menu{
+.dashboardButtons{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:6px;
-margin-top:10px
+margin-top:9px
 }
 
 .status{
 font-size:12px;
-color:#aab6c2;
+color:#a9b6c1;
 margin-top:9px;
 line-height:1.5
 }
 
+/* LEGEND */
+
 .legend{
-position:absolute;
-z-index:1200;
+position:fixed;
+z-index:1500;
 right:10px;
 bottom:15px;
-background:#0d1720ed;
+background:#0c1720ed;
 border:1px solid #2b3b4a;
-padding:9px;
 border-radius:10px;
+padding:9px;
 font-size:11px;
-line-height:1.8
+line-height:1.9
 }
 
 .dot{
-display:inline-block;
 width:10px;
 height:10px;
+display:inline-block;
 border-radius:50%;
 margin-right:5px
 }
 
-.modal{
-display:none;
+/* POINT PANEL */
+
+.panel{
 position:fixed;
-inset:0;
-z-index:3000;
-background:#000b;
-align-items:flex-end;
-justify-content:center
-}
-
-.modal.show{
-display:flex
-}
-
-.form{
-width:min(550px,100%);
-max-height:92vh;
-overflow:auto;
+z-index:4000;
+top:0;
+right:-100%;
+width:min(420px,100%);
+height:100%;
 background:#0d1720;
-border:1px solid #2c3c4b;
-border-radius:18px 18px 0 0;
-padding:16px
+border-left:1px solid #2b3b4a;
+transition:.25s;
+padding:15px;
+overflow-y:auto
 }
 
-.form h2{
-margin:0 0 10px
+.panel.open{
+right:0
 }
 
-.form label{
+.panel h2{
+margin:0 0 12px
+}
+
+.panel label{
 display:block;
 font-size:12px;
-color:#9ca9b6;
+color:#9eabb7;
 margin:9px 0 4px
 }
 
-.form input,
-.form select,
-.form textarea{
+.panel input,
+.panel select,
+.panel textarea{
 width:100%;
 padding:10px;
-background:#081119;
+background:#071119;
 border:1px solid #2b3b4a;
 border-radius:8px;
-color:white;
+color:#fff;
 outline:none
 }
 
-.form textarea{
-min-height:80px
+.panel textarea{
+min-height:80px;
+resize:vertical
 }
 
-.actions{
+.panelButtons{
 display:flex;
 gap:7px;
 margin-top:13px
 }
 
-.actions button{
+.panelButtons button{
 flex:1
 }
 
-.close{
-background:#263442
-}
-
-.popup-title{
-font-weight:bold;
-font-size:15px
-}
-
-.popup-body{
-font-size:12px;
-line-height:1.7
-}
-
-.popup-body b{
-color:#222
-}
-
-.login{
-position:fixed;
-inset:0;
-z-index:5000;
-background:#071019;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:15px
-}
-
-.login.hidden{
-display:none
-}
-
-.login-box{
-width:min(390px,100%);
-background:#101c26;
-border:1px solid #2b3b4a;
-border-radius:17px;
-padding:20px
-}
-
-.login-box h1{
-margin-top:0
-}
-
-.login-box input{
-width:100%;
-margin:5px 0;
-padding:12px;
-background:#081119;
+.locationBox{
+background:#14222d;
 border:1px solid #2b3b4a;
 border-radius:9px;
-color:white
-}
-
-.login-box button{
-width:100%;
-margin-top:8px
-}
-
-.login-msg{
+padding:10px;
 font-size:12px;
-color:#f59e0b;
-margin-top:8px
+margin-top:10px
 }
 
-.leaflet-popup-content-wrapper,
-.leaflet-popup-tip{
-background:#fff;
-color:#111
+.locationBox b{
+color:#22c55e
 }
 
-@media(max-width:600px){
+/* LIST */
+
+.listPanel{
+position:fixed;
+z-index:1800;
+left:10px;
+bottom:15px;
+width:330px;
+max-width:calc(100% - 20px);
+max-height:250px;
+overflow:auto;
+background:#0c1720ed;
+border:1px solid #2b3b4a;
+border-radius:12px;
+padding:9px
+}
+
+.listTitle{
+font-weight:bold;
+margin-bottom:7px
+}
+
+.item{
+background:#14222d;
+border:1px solid #293a48;
+border-radius:9px;
+padding:8px;
+margin-bottom:6px;
+font-size:12px
+}
+
+.item b{
+font-size:13px
+}
+
+.item small{
+display:block;
+color:#9eabb7;
+margin-top:3px
+}
+
+.item button{
+padding:5px 8px;
+font-size:11px;
+margin-top:5px
+}
+
+/* DRAW PANEL */
+
+.linePanel{
+position:fixed;
+z-index:2500;
+bottom:15px;
+left:50%;
+transform:translateX(-50%);
+background:#0c1720f5;
+border:1px solid #2b3b4a;
+border-radius:12px;
+padding:10px;
+display:none;
+width:min(450px,calc(100% - 20px))
+}
+
+.linePanel.show{
+display:block
+}
+
+.linePanelTitle{
+font-weight:bold;
+margin-bottom:7px
+}
+
+.lineButtons{
+display:flex;
+gap:6px
+}
+
+.lineButtons button{
+flex:1
+}
+
+/* RESPONSIVE */
+
+@media(max-width:650px){
 
 header{
-height:58px
+height:56px
 }
 
 .logo{
-font-size:15px
+font-size:14px
+}
+
+header button{
+padding:8px 9px
 }
 
 #map{
-height:calc(100vh - 58px)
+top:56px
 }
 
 .dashboard{
-top:68px
+top:67px;
+width:300px
+}
+
+.listPanel{
+bottom:10px;
+width:300px;
+max-height:190px
+}
+
+.legend{
+bottom:10px;
+right:7px
 }
 
 }
+
 </style>
 </head>
 
 <body>
 
+
 <!-- LOGIN -->
-<div class="login" id="loginScreen">
 
-<div class="login-box">
+<div id="loginScreen">
 
-<h1>🧵 SAM Network</h1>
+<div class="loginBox">
 
-<p style="color:#9ca9b6">
-Staff Login
+<h1>
+SAM <span>NETWORK</span>
+</h1>
+
+<p>
+Fiber Network Management System
 </p>
 
 <input
 id="email"
 type="email"
-placeholder="Email">
+placeholder="Staff Email">
 
 <input
 id="password"
@@ -347,14 +489,14 @@ onclick="signup()">
 ➕ নতুন Staff Account
 </button>
 
-<div
-id="loginMsg"
-class="login-msg">
+<div id="loginMsg"></div>
+
 </div>
 
 </div>
-</div>
 
+
+<!-- HEADER -->
 
 <header>
 
@@ -363,67 +505,82 @@ SAM <span>NETWORK</span>
 </div>
 
 <div class="search">
+
 <input
 id="search"
-placeholder="Customer / Box / ঠিকানা খুঁজুন..."
-oninput="searchMap()">
+placeholder="🔎 Customer / Box / Address"
+oninput="searchPoint()">
+
 </div>
 
-<button onclick="locateMe()">📍</button>
+<button
+onclick="locateMe()">
+📍
+</button>
 
 <button
 class="green"
-onclick="openPointForm()">
-＋ Point
+onclick="openPointPanel()">
+＋
 </button>
 
 </header>
 
 
+<!-- MAP -->
+
 <div id="map"></div>
 
 
+<!-- DASHBOARD -->
+
 <div class="dashboard">
 
-<h3>📊 Network Dashboard</h3>
+<h3>
+📊 Network Dashboard
+</h3>
 
 <div class="stats">
 
 <div class="stat">
-<b id="points">0</b>
-<small>Points</small>
+<b id="totalPoints">0</b>
+<small>All Points</small>
 </div>
 
 <div class="stat">
-<b id="customers">0</b>
-<small>Customer</small>
+<b id="totalCustomers">0</b>
+<small>Customers</small>
 </div>
 
 <div class="stat">
-<b id="km">0</b>
+<b id="totalKm">0</b>
 <small>Fiber KM</small>
 </div>
 
 </div>
 
-
-<div class="menu">
+<div class="dashboardButtons">
 
 <button
 class="green"
-onclick="openPointForm()">
+onclick="openPointPanel()">
 📍 Add Point
 </button>
 
-<button onclick="startLine()">
+<button
+class="blue"
+onclick="beginLine()">
 🧵 Fiber Line
 </button>
 
-<button onclick="locateMe()">
-📍 My Location
+<button
+onclick="locateMe()">
+📍 My GPS
 </button>
 
-<button onclick="logout()">
+<button
+class="red"
+onclick="logout()">
 🚪 Logout
 </button>
 
@@ -438,46 +595,82 @@ Cloud data loading...
 </div>
 
 
+<!-- LEGEND -->
+
 <div class="legend">
 
 <div>
-<span class="dot" style="background:#22c55e"></span>
+<span
+class="dot"
+style="background:#22c55e">
+</span>
 Fiber Drop
 </div>
 
 <div>
-<span class="dot" style="background:#f59e0b"></span>
-Box / Splitter
+<span
+class="dot"
+style="background:#f59e0b">
+</span>
+Box
 </div>
 
 <div>
-<span class="dot" style="background:#2563eb"></span>
+<span
+class="dot"
+style="background:#2563eb">
+</span>
 OLT
 </div>
 
 <div>
-<span class="dot" style="background:#a855f7"></span>
+<span
+class="dot"
+style="background:#a855f7">
+</span>
 Customer
 </div>
 
 <div>
-<span class="dot" style="background:#ef4444"></span>
+<span
+class="dot"
+style="background:#ef4444">
+</span>
 Problem
 </div>
 
 </div>
 
 
-<!-- POINT FORM -->
+<!-- POINT LIST -->
+
 <div
-class="modal"
-id="pointModal">
+class="listPanel">
 
-<div class="form">
+<div class="listTitle">
+📍 Recent Points
+</div>
 
-<h2>📍 Network Point</h2>
+<div id="pointList">
+কোনো Point নেই
+</div>
 
-<label>Point Type</label>
+</div>
+
+
+<!-- POINT PANEL -->
+
+<div
+class="panel"
+id="pointPanel">
+
+<h2>
+📍 Add Network Point
+</h2>
+
+<label>
+Point Type
+</label>
 
 <select id="pointType">
 
@@ -504,128 +697,139 @@ id="pointModal">
 </select>
 
 
-<label>Name</label>
+<label>
+Name
+</label>
 
 <input
 id="pointName"
 placeholder="Customer / Box / OLT নাম">
 
 
-<label>Phone</label>
-
-<input
-id="pointPhone"
-placeholder="মোবাইল নম্বর">
-
-
-<label>Address</label>
+<label>
+Address
+</label>
 
 <input
 id="pointAddress"
-placeholder="সম্পূর্ণ ঠিকানা">
+placeholder="ঠিকানা">
 
 
-<label>Fiber Length (meter)</label>
+<label>
+Fiber Length
+</label>
 
 <input
-id="pointFiber"
+id="pointLength"
 type="number"
-placeholder="যেমন 250">
+min="0"
+placeholder="মিটার">
 
 
-<label>Fiber Type</label>
-
-<select id="fiberType">
-
-<option value="Drop Cable">
-Drop Cable
-</option>
-
-<option value="1 Core">
-1 Core
-</option>
-
-<option value="2 Core">
-2 Core
-</option>
-
-<option value="4 Core">
-4 Core
-</option>
-
-<option value="8 Core">
-8 Core
-</option>
-
-<option value="12 Core">
-12 Core
-</option>
-
-<option value="24 Core">
-24 Core
-</option>
-
-</select>
-
-
-<label>Status</label>
-
-<select id="pointStatus">
-
-<option value="Active">
-Active
-</option>
-
-<option value="Inactive">
-Inactive
-</option>
-
-<option value="Problem">
-Problem
-</option>
-
-<option value="Maintenance">
-Maintenance
-</option>
-
-</select>
-
-
-<label>Note</label>
+<label>
+Note
+</label>
 
 <textarea
 id="pointNote"
-placeholder="অতিরিক্ত তথ্য"></textarea>
+placeholder="অতিরিক্ত তথ্য">
+</textarea>
 
 
-<div class="actions">
+<div class="locationBox">
+
+<div>
+📍 Location:
+</div>
+
+<b id="locationText">
+এখনও Location নেওয়া হয়নি
+</b>
 
 <button
-class="close"
-onclick="closePointForm()">
-Cancel
+class="blue"
+style="width:100%;margin-top:8px"
+onclick="pickLocation()">
+🗺️ Map থেকে Location নিন
+</button>
+
+</div>
+
+
+<div
+class="status"
+id="pointStatus">
+প্রথমে “Map থেকে Location নিন” চাপুন।
+</div>
+
+
+<div class="panelButtons">
+
+<button
+onclick="closePointPanel()">
+বন্ধ
 </button>
 
 <button
 class="green"
 onclick="savePoint()">
+💾 Save Point
+</button>
+
+</div>
+
+</div>
+
+
+<!-- LINE PANEL -->
+
+<div
+class="linePanel"
+id="linePanel">
+
+<div class="linePanelTitle">
+🧵 Fiber Line Drawing
+</div>
+
+<div
+class="status"
+id="lineStatus">
+ম্যাপে ক্লিক করে Fiber-এর রাস্তা আঁকুন।
+</div>
+
+<div class="lineButtons">
+
+<button
+onclick="undoLine()">
+↩️ Undo
+</button>
+
+<button
+class="red"
+onclick="cancelLine()">
+❌ Cancel
+</button>
+
+<button
+class="green"
+onclick="saveLine()">
 💾 Save
 </button>
 
 </div>
 
-<div
-id="pointMsg"
-class="status">
-</div>
-
-</div>
 </div>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script
+src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js">
+</script>
+
 
 <script>
+
+
+/* SUPABASE */
 
 const SUPABASE_URL =
 "https://cuzgpesjgjxogmbzbxhf.supabase.co";
@@ -634,12 +838,18 @@ const SUPABASE_KEY =
 "sb_publishable_tTHhdAGnSwTOuWlsnH9c4w_C1Lghz71";
 
 
+/* VARIABLES */
+
 let token =
-localStorage.getItem("sam_access_token");
+localStorage.getItem(
+"sam_network_token"
+);
 
 let user =
 JSON.parse(
-localStorage.getItem("sam_user") || "null"
+localStorage.getItem(
+"sam_network_user"
+) || "null"
 );
 
 let map;
@@ -650,18 +860,24 @@ let lines=[];
 
 let markers=[];
 
-let myLocation;
+let lineLayers=[];
 
-let drawing=false;
+let currentLocation=null;
 
-let drawPoints=[];
+let pickingLocation=false;
 
-let drawLayer;
+let drawingLine=false;
 
+let linePoints=[];
+
+let tempLine=null;
+
+let myMarker=null;
+
+
+/* COLORS */
 
 const COLORS={
-
-customer:"#a855f7",
 
 fiber_drop:"#22c55e",
 
@@ -669,14 +885,14 @@ box:"#f59e0b",
 
 olt:"#2563eb",
 
+customer:"#a855f7",
+
 problem:"#ef4444"
 
 };
 
 
-const NAMES={
-
-customer:"Customer",
+const LABELS={
 
 fiber_drop:"Fiber Drop",
 
@@ -684,19 +900,26 @@ box:"Box / Splitter",
 
 olt:"OLT",
 
+customer:"Customer",
+
 problem:"Problem"
 
 };
 
 
-function headers(extra={}){
+/* API */
+
+function apiHeaders(extra={}){
 
 return Object.assign({
 
-"apikey":SUPABASE_KEY,
+"apikey":
+SUPABASE_KEY,
 
 "Authorization":
-"Bearer "+(token || SUPABASE_KEY),
+"Bearer "+(
+token || SUPABASE_KEY
+),
 
 "Content-Type":
 "application/json"
@@ -709,10 +932,14 @@ return Object.assign({
 async function api(path,options={}){
 
 options.headers=
-headers(options.headers||{});
+apiHeaders(
+options.headers || {}
+);
 
 return fetch(
-SUPABASE_URL+"/rest/v1/"+path,
+SUPABASE_URL+
+"/rest/v1/"+
+path,
 options
 );
 
@@ -724,28 +951,36 @@ options
 async function login(){
 
 const email=
-document.getElementById("email").value.trim();
+document.getElementById(
+"email"
+).value.trim();
 
 const password=
-document.getElementById("password").value;
+document.getElementById(
+"password"
+).value;
 
 if(!email || !password){
 
-document.getElementById("loginMsg")
-.textContent=
+document.getElementById(
+"loginMsg"
+).textContent=
 "Email এবং Password দিন";
 
 return;
 
 }
 
-document.getElementById("loginMsg")
-.textContent="Login হচ্ছে...";
+document.getElementById(
+"loginMsg"
+).textContent=
+"Login হচ্ছে...";
 
 
 try{
 
-const r=await fetch(
+const r=
+await fetch(
 SUPABASE_URL+
 "/auth/v1/token?grant_type=password",
 {
@@ -753,19 +988,22 @@ SUPABASE_URL+
 method:"POST",
 
 headers:{
-"apikey":SUPABASE_KEY,
-"Content-Type":"application/json"
+"apikey":
+SUPABASE_KEY,
+"Content-Type":
+"application/json"
 },
 
 body:JSON.stringify({
-email,
-password
+email:email,
+password:password
 })
 
 }
 );
 
-const data=await r.json();
+const data=
+await r.json();
 
 if(!r.ok){
 
@@ -777,17 +1015,19 @@ data.msg ||
 
 }
 
-token=data.access_token;
+token=
+data.access_token;
 
-user=data.user;
+user=
+data.user;
 
 localStorage.setItem(
-"sam_access_token",
+"sam_network_token",
 token
 );
 
 localStorage.setItem(
-"sam_user",
+"sam_network_user",
 JSON.stringify(user)
 );
 
@@ -795,26 +1035,35 @@ showApp();
 
 }catch(e){
 
-document.getElementById("loginMsg")
-.textContent=e.message;
+document.getElementById(
+"loginMsg"
+).textContent=
+"❌ "+e.message;
 
 }
 
 }
 
+
+/* SIGNUP */
 
 async function signup(){
 
 const email=
-document.getElementById("email").value.trim();
+document.getElementById(
+"email"
+).value.trim();
 
 const password=
-document.getElementById("password").value;
+document.getElementById(
+"password"
+).value;
 
 if(!email || !password){
 
-document.getElementById("loginMsg")
-.textContent=
+document.getElementById(
+"loginMsg"
+).textContent=
 "Email এবং Password দিন";
 
 return;
@@ -823,41 +1072,48 @@ return;
 
 if(password.length<6){
 
-document.getElementById("loginMsg")
-.textContent=
-"Password কমপক্ষে ৬ অক্ষরের হতে হবে";
+document.getElementById(
+"loginMsg"
+).textContent=
+"Password কমপক্ষে ৬ অক্ষর হতে হবে";
 
 return;
 
 }
 
-document.getElementById("loginMsg")
-.textContent=
+document.getElementById(
+"loginMsg"
+).textContent=
 "Account তৈরি হচ্ছে...";
 
 
 try{
 
-const r=await fetch(
-SUPABASE_URL+"/auth/v1/signup",
+const r=
+await fetch(
+SUPABASE_URL+
+"/auth/v1/signup",
 {
 
 method:"POST",
 
 headers:{
-"apikey":SUPABASE_KEY,
-"Content-Type":"application/json"
+"apikey":
+SUPABASE_KEY,
+"Content-Type":
+"application/json"
 },
 
 body:JSON.stringify({
-email,
-password
+email:email,
+password:password
 })
 
 }
 );
 
-const data=await r.json();
+const data=
+await r.json();
 
 if(!r.ok){
 
@@ -871,17 +1127,19 @@ data.error_description ||
 
 if(data.access_token){
 
-token=data.access_token;
+token=
+data.access_token;
 
-user=data.user;
+user=
+data.user;
 
 localStorage.setItem(
-"sam_access_token",
+"sam_network_token",
 token
 );
 
 localStorage.setItem(
-"sam_user",
+"sam_network_user",
 JSON.stringify(user)
 );
 
@@ -889,46 +1147,35 @@ showApp();
 
 }else{
 
-document.getElementById("loginMsg")
-.textContent=
-"Account তৈরি হয়েছে। Email verification চাইলে Email verify করে Login করুন।";
+document.getElementById(
+"loginMsg"
+).textContent=
+"✅ Account তৈরি হয়েছে। Email verification লাগলে Email verify করে Login করুন।";
 
 }
 
 }catch(e){
 
-document.getElementById("loginMsg")
-.textContent=e.message;
+document.getElementById(
+"loginMsg"
+).textContent=
+"❌ "+e.message;
 
 }
 
 }
 
+
+/* LOGOUT */
 
 async function logout(){
 
-try{
-
-if(token){
-
-await fetch(
-SUPABASE_URL+"/auth/v1/logout",
-{
-method:"POST",
-headers:headers()
-}
-);
-
-}
-
-}catch(e){}
-
 localStorage.removeItem(
-"sam_access_token"
+"sam_network_token"
 );
 
 localStorage.removeItem(
-"sam_user"
+"sam_network_user"
 );
 
 location.reload();
@@ -936,27 +1183,19 @@ location.reload();
 }
 
 
+/* APP */
+
 function showApp(){
 
 document.getElementById(
 "loginScreen"
-).classList.add("hidden");
-
-setTimeout(
-loadData,
-300
+).classList.add(
+"hide"
 );
 
-}
+initMap();
 
-
-function checkLogin(){
-
-if(token){
-
-showApp();
-
-}
+loadData();
 
 }
 
@@ -965,31 +1204,73 @@ showApp();
 
 function initMap(){
 
-map=L.map("map")
-.setView(
+if(map)return;
+
+map=
+L.map(
+"map"
+).setView(
 [23.8103,90.4125],
 13
 );
 
+
 L.tileLayer(
 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
 {
-maxZoom:19,
+
+maxZoom:20,
+
 attribution:
-"© OpenStreetMap"
+"© OpenStreetMap contributors"
+
 }
 ).addTo(map);
 
+
+/* MAP CLICK */
 
 map.on(
 "click",
 function(e){
 
-if(drawing){
+/* POINT LOCATION */
 
-addDrawPoint(
-e.latlng
+if(pickingLocation){
+
+currentLocation=e.latlng;
+
+pickingLocation=false;
+
+document.getElementById(
+"locationText"
+).textContent=
+e.latlng.lat.toFixed(6)+
+", "+
+e.latlng.lng.toFixed(6);
+
+document.getElementById(
+"pointStatus"
+).textContent=
+"✅ Location নেওয়া হয়েছে। এখন Save Point চাপুন।";
+
+return;
+
+}
+
+
+/* FIBER LINE */
+
+if(drawingLine){
+
+linePoints.push(
+[
+e.latlng.lat,
+e.latlng.lng
+]
 );
+
+drawTemporaryLine();
 
 }
 
@@ -998,10 +1279,13 @@ e.latlng
 }
 
 
-function icon(type){
+/* POINT ICON */
+
+function pointIcon(type){
 
 const color=
-COLORS[type] || "#111827";
+COLORS[type] ||
+"#fff";
 
 return L.divIcon({
 
@@ -1010,27 +1294,36 @@ className:"",
 html:
 
 `<div style="
-width:20px;
-height:20px;
+width:19px;
+height:19px;
 background:${color};
 border:3px solid white;
 border-radius:50%;
 box-shadow:0 2px 8px #000;
 "></div>`,
 
-iconSize:[20,20],
+iconSize:[
+19,
+19
+],
 
-iconAnchor:[10,10]
+iconAnchor:[
+9.5,
+9.5
+]
 
 });
 
 }
 
 
-function escapeHTML(text){
+/* ESCAPE */
 
-return String(text||"")
-.replace(
+function esc(text){
+
+return String(
+text || ""
+).replace(
 /[&<>"']/g,
 m=>({
 
@@ -1046,93 +1339,24 @@ m=>({
 }
 
 
-function addMarker(p){
-
-const marker=
-L.marker(
-[
-p.latitude,
-p.longitude
-],
-{
-icon:icon(p.point_type)
-}
-)
-.addTo(map);
-
-marker.pointId=p.id;
-
-marker.bindPopup(`
-
-<div class="popup-title">
-
-${NAMES[p.point_type] || p.point_type}
-
-</div>
-
-<div class="popup-body">
-
-<b>${escapeHTML(p.name||"Unnamed")}</b>
-
-<br>
-
-📞 ${escapeHTML(p.phone||"")}
-
-<br>
-
-📍 ${escapeHTML(p.address||"")}
-
-<br>
-
-🧵 Fiber:
-${Number(p.fiber_length||0)} m
-
-<br>
-
-🔌 Type:
-${escapeHTML(p.fiber_type||"")}
-
-<br>
-
-📊 Status:
-${escapeHTML(p.status||"")}
-
-<br>
-
-📝 ${escapeHTML(p.note||"")}
-
-<br><br>
-
-<button
-onclick="deletePoint('${p.id}')"
-style="background:#dc2626;color:white">
-Delete
-</button>
-
-</div>
-
-`);
-
-markers.push(marker);
-
-}
-
+/* LOAD */
 
 async function loadData(){
 
-document.getElementById("status")
-.textContent=
-"☁️ Cloud data loading...";
-
-
 try{
 
-const pr=
+document.getElementById(
+"status"
+).textContent=
+"☁️ Cloud থেকে Data আসছে...";
+
+
+const r=
 await api(
 "network_points?select=*&order=created_at.desc"
 );
 
-if(pr.status===401){
+if(r.status===401){
 
 logout();
 
@@ -1140,24 +1364,16 @@ return;
 
 }
 
-if(!pr.ok){
+if(!r.ok){
 
 throw new Error(
-await pr.text()
+await r.text()
 );
 
 }
 
-points=await pr.json();
-
-
-markers.forEach(
-m=>map.removeLayer(m)
-);
-
-markers=[];
-
-points.forEach(addMarker);
+points=
+await r.json();
 
 
 const lr=
@@ -1167,29 +1383,38 @@ await api(
 
 if(lr.ok){
 
-lines=await lr.json();
+lines=
+await lr.json();
 
-lines.forEach(
-drawSavedLine
-);
+}else{
+
+lines=[];
 
 }
 
 
+drawEverything();
+
 updateDashboard();
 
+renderList();
 
-document.getElementById("status")
-.textContent=
-"☁️ Cloud connected • "+
+
+document.getElementById(
+"status"
+).textContent=
+"☁️ Cloud Connected • "+
 points.length+
-" points loaded";
+" Point • "+
+lines.length+
+" Fiber Line";
 
 }catch(e){
 
-document.getElementById("status")
-.textContent=
-"❌ Cloud error: "+
+document.getElementById(
+"status"
+).textContent=
+"❌ Cloud Error: "+
 e.message;
 
 }
@@ -1197,94 +1422,362 @@ e.message;
 }
 
 
-function updateDashboard(){
+/* DRAW EVERYTHING */
 
-document.getElementById(
-"points"
-).textContent=
-points.length;
+function drawEverything(){
 
+markers.forEach(
+m=>{
+map.removeLayer(m);
+}
+);
 
-document.getElementById(
-"customers"
-).textContent=
-points.filter(
-p=>p.point_type==="customer"
-).length;
+markers=[];
 
 
-let total=0;
+lineLayers.forEach(
+l=>{
+map.removeLayer(l);
+}
+);
+
+lineLayers=[];
+
+
+/* LINES */
 
 lines.forEach(
-l=>{
-total+=Number(
-l.length_m||0
-);
+line=>{
+
+let path=line.path;
+
+if(typeof path==="string"){
+
+try{
+path=
+JSON.parse(path);
+}catch(e){
+path=[];
 }
-);
-
-document.getElementById(
-"km"
-).textContent=
-(total/1000).toFixed(2);
 
 }
 
+if(
+Array.isArray(path) &&
+path.length>1
+){
 
-/* POINT FORM */
+const layer=
+L.polyline(
+path,
+{
 
-let selectedLocation=null;
+color:"#0867ff",
+
+weight:5,
+
+opacity:.85
+
+}
+)
+.addTo(map)
+.bindPopup(
+"🧵 Fiber Line<br>"+
+"📏 "+
+Math.round(
+Number(
+line.length_m || 0
+)
+)+
+" meter"
+);
+
+lineLayers.push(layer);
+
+}
+
+});
 
 
-function openPointForm(){
+/* POINTS */
 
-selectedLocation=null;
+points.forEach(
+p=>{
 
-document.getElementById(
-"pointModal"
-).classList.add("show");
+const marker=
+L.marker(
+[
+Number(p.latitude),
+Number(p.longitude)
+],
+{
+icon:
+pointIcon(
+p.point_type
+)
+}
+)
+.addTo(map);
 
-document.getElementById(
-"pointMsg"
-).textContent=
-"ম্যাপে যেখানে Point বসাতে চান সেখানে ক্লিক করুন।";
 
-map.once(
-"click",
-function(e){
+marker.pointId=p.id;
 
-selectedLocation=e.latlng;
 
-document.getElementById(
-"pointMsg"
-).textContent=
-"📍 Location selected: "+
-e.latlng.lat.toFixed(6)+
-", "+
-e.latlng.lng.toFixed(6);
+marker.bindPopup(`
+
+<b>
+${esc(p.name)}
+</b>
+
+<br>
+
+${LABELS[p.point_type] ||
+p.point_type}
+
+<br>
+
+📍 ${esc(
+p.address || ""
+)}
+
+<br>
+
+📏 ${
+Number(
+p.fiber_length || 0
+)
+} meter
+
+<br>
+
+📝 ${esc(
+p.note || ""
+)}
+
+<br><br>
+
+<button
+onclick="deletePoint('${p.id}')"
+style="
+background:#dc2626;
+color:white;
+padding:6px 9px;
+border-radius:7px;
+border:0">
+Delete
+</button>
+
+`);
+
+
+markers.push(marker);
 
 });
 
 }
 
 
-function closePointForm(){
+/* DASHBOARD */
+
+function updateDashboard(){
 
 document.getElementById(
-"pointModal"
-).classList.remove("show");
+"totalPoints"
+).textContent=
+points.length;
+
+
+document.getElementById(
+"totalCustomers"
+).textContent=
+points.filter(
+p=>
+p.point_type==="customer"
+).length;
+
+
+let total=0;
+
+lines.forEach(
+line=>{
+total+=
+Number(
+line.length_m || 0
+);
+}
+);
+
+
+document.getElementById(
+"totalKm"
+).textContent=
+(total/1000).toFixed(2);
 
 }
 
 
-async function savePoint(){
+/* LIST */
 
-if(!selectedLocation){
+function renderList(){
+
+const box=
+document.getElementById(
+"pointList"
+);
+
+if(!points.length){
+
+box.innerHTML=
+"কোনো Point নেই";
+
+return;
+
+}
+
+
+box.innerHTML=
+points.slice(
+0,
+20
+).map(
+p=>`
+
+<div class="item">
+
+<b>
+${esc(p.name || "Unnamed")}
+</b>
+
+<small>
+${LABELS[p.point_type] ||
+p.point_type}
+</small>
+
+<small>
+📍 ${
+Number(p.latitude)
+.toFixed(5)
+},
+${
+Number(p.longitude)
+.toFixed(5)
+}
+</small>
+
+<small>
+📏 ${
+Number(
+p.fiber_length || 0
+)
+} m
+</small>
+
+<button
+class="red"
+onclick="
+deletePoint('${p.id}')
+">
+Delete
+</button>
+
+</div>
+
+`
+).join("");
+
+}
+
+
+/* POINT PANEL */
+
+function openPointPanel(){
 
 document.getElementById(
-"pointMsg"
+"pointPanel"
+).classList.add(
+"open"
+);
+
+currentLocation=null;
+
+pickingLocation=false;
+
+document.getElementById(
+"locationText"
 ).textContent=
-"⚠️ আগে ম্যাপে একটি জায়গায় ক্লিক করুন।";
+"এখনও Location নেওয়া হয়নি";
+
+document.getElementById(
+"pointStatus"
+).textContent=
+"🗺️ নিচের “Map থেকে Location নিন” চাপুন।";
+
+}
+
+
+/* CLOSE PANEL */
+
+function closePointPanel(){
+
+document.getElementById(
+"pointPanel"
+).classList.remove(
+"open"
+);
+
+pickingLocation=false;
+
+}
+
+
+/* PICK LOCATION */
+
+function pickLocation(){
+
+pickingLocation=true;
+
+document.getElementById(
+"pointStatus"
+).textContent=
+"📍 এখন ম্যাপে যেখানে Point বসাতে চান সেখানে ট্যাপ করুন।";
+
+
+/* PANEL একটু সরিয়ে দেওয়া */
+
+document.getElementById(
+"pointPanel"
+).classList.remove(
+"open"
+);
+
+}
+
+
+/* SAVE POINT */
+
+async function savePoint(){
+
+if(!currentLocation){
+
+alert(
+"⚠️ আগে “Map থেকে Location নিন” চাপুন, তারপর ম্যাপে জায়গাটায় ট্যাপ করুন।"
+);
+
+return;
+
+}
+
+
+const name=
+document.getElementById(
+"pointName"
+).value.trim();
+
+if(!name){
+
+alert(
+"Point-এর নাম দিন।"
+);
 
 return;
 
@@ -1293,10 +1786,7 @@ return;
 
 const body={
 
-name:
-document.getElementById(
-"pointName"
-).value.trim(),
+name:name,
 
 point_type:
 document.getElementById(
@@ -1304,50 +1794,42 @@ document.getElementById(
 ).value,
 
 latitude:
-selectedLocation.lat,
+Number(
+currentLocation.lat
+),
 
 longitude:
-selectedLocation.lng,
+Number(
+currentLocation.lng
+),
 
-phone:
+fiber_length:
+Number(
 document.getElementById(
-"pointPhone"
-).value.trim(),
+"pointLength"
+).value || 0
+),
 
 address:
 document.getElementById(
 "pointAddress"
 ).value.trim(),
 
-fiber_length:
-Number(
-document.getElementById(
-"pointFiber"
-).value || 0
-),
-
-fiber_type:
-document.getElementById(
-"fiberType"
-).value,
-
-status:
-document.getElementById(
-"pointStatus"
-).value,
-
 note:
 document.getElementById(
 "pointNote"
-).value.trim()
+).value.trim(),
+
+created_by:
+user.id
 
 };
 
 
 document.getElementById(
-"pointMsg"
+"pointStatus"
 ).textContent=
-"☁️ Saving...";
+"☁️ Cloud-এ Save হচ্ছে...";
 
 
 try{
@@ -1380,24 +1862,15 @@ await r.text()
 }
 
 
-const saved=
-(await r.json())[0];
+alert(
+"✅ Point Cloud-এ Save হয়েছে"
+);
 
-points.unshift(saved);
 
-addMarker(saved);
-
-updateDashboard();
-
-closePointForm();
-
+/* CLEAR */
 
 document.getElementById(
 "pointName"
-).value="";
-
-document.getElementById(
-"pointPhone"
 ).value="";
 
 document.getElementById(
@@ -1405,7 +1878,7 @@ document.getElementById(
 ).value="";
 
 document.getElementById(
-"pointFiber"
+"pointLength"
 ).value="";
 
 document.getElementById(
@@ -1413,13 +1886,17 @@ document.getElementById(
 ).value="";
 
 
+closePointPanel();
+
+await loadData();
+
+
 }catch(e){
 
-document.getElementById(
-"pointMsg"
-).textContent=
-"❌ Save failed: "+
-e.message;
+alert(
+"❌ Point Save হয়নি:\n"+
+e.message
+);
 
 }
 
@@ -1441,7 +1918,8 @@ try{
 
 const r=
 await api(
-"network_points?id=eq."+encodeURIComponent(id),
+"network_points?id=eq."+
+encodeURIComponent(id),
 {
 method:"DELETE"
 }
@@ -1457,34 +1935,13 @@ await r.text()
 }
 
 
-const marker=
-markers.find(
-m=>m.pointId===id
-);
+await loadData();
 
-if(marker){
-
-map.removeLayer(marker);
-
-markers=
-markers.filter(
-m=>m!==marker
-);
-
-}
-
-
-points=
-points.filter(
-p=>p.id!==id
-);
-
-updateDashboard();
 
 }catch(e){
 
 alert(
-"Delete failed: "+
+"❌ Delete হয়নি:\n"+
 e.message
 );
 
@@ -1497,40 +1954,68 @@ e.message
 
 function locateMe(){
 
+if(
+!navigator.geolocation
+){
+
+alert(
+"এই ফোনে GPS সাপোর্ট নেই।"
+);
+
+return;
+
+}
+
+
 navigator.geolocation.getCurrentPosition(
 
-function(pos){
+function(position){
 
 const lat=
-pos.coords.latitude;
+position.coords.latitude;
 
 const lng=
-pos.coords.longitude;
+position.coords.longitude;
 
 
 map.setView(
-[lat,lng],
-17
+[
+lat,
+lng
+],
+18
 );
 
 
-if(myLocation){
+if(myMarker){
 
-myLocation.setLatLng(
-[lat,lng]
+myMarker.setLatLng(
+[
+lat,
+lng
+]
 );
 
 }else{
 
-myLocation=
+myMarker=
 L.circleMarker(
-[lat,lng],
+[
+lat,
+lng
+],
 {
+
 radius:9,
+
 color:"#fff",
+
 weight:3,
+
 fillColor:"#06b6d4",
+
 fillOpacity:1
+
 }
 )
 .addTo(map)
@@ -1546,15 +2031,19 @@ fillOpacity:1
 function(){
 
 alert(
-"⚠️ Location permission দিন এবং GPS চালু রাখুন।"
+"⚠️ GPS Location Permission দিন।"
 );
 
 },
 
 {
+
 enableHighAccuracy:true,
-timeout:10000,
+
+timeout:20000,
+
 maximumAge:0
+
 }
 
 );
@@ -1564,7 +2053,7 @@ maximumAge:0
 
 /* SEARCH */
 
-function searchMap(){
+function searchPoint(){
 
 const q=
 document.getElementById(
@@ -1573,44 +2062,48 @@ document.getElementById(
 .toLowerCase()
 .trim();
 
-if(!q)return;
+if(!q){
+
+return;
+
+}
 
 
-const p=
+const found=
 points.find(
-x=>
+p=>
 
-String(x.name||"")
+String(
+p.name || ""
+)
 .toLowerCase()
 .includes(q)
 
 ||
 
-String(x.phone||"")
+String(
+p.address || ""
+)
 .toLowerCase()
 .includes(q)
 
 ||
 
-String(x.address||"")
-.toLowerCase()
-.includes(q)
-
-||
-
-String(x.note||"")
+String(
+p.note || ""
+)
 .toLowerCase()
 .includes(q)
 
 );
 
 
-if(p){
+if(found){
 
 map.setView(
 [
-p.latitude,
-p.longitude
+Number(found.latitude),
+Number(found.longitude)
 ],
 18
 );
@@ -1618,8 +2111,11 @@ p.longitude
 
 const marker=
 markers.find(
-m=>m.pointId===p.id
+m=>
+m.pointId===
+found.id
 );
+
 
 if(marker){
 
@@ -1634,121 +2130,128 @@ marker.openPopup();
 
 /* FIBER LINE */
 
-function startLine(){
+function beginLine(){
 
-if(drawing){
+drawingLine=true;
 
-drawing=false;
-
-drawPoints=[];
-
-if(drawLayer){
-
-map.removeLayer(
-drawLayer
-);
-
-drawLayer=null;
-
-}
+linePoints=[];
 
 document.getElementById(
-"status"
-).textContent=
-"Fiber drawing cancelled.";
-
-return;
-
-}
-
-
-drawing=true;
-
-drawPoints=[];
-
+"linePanel"
+).classList.add(
+"show"
+);
 
 document.getElementById(
-"status"
+"lineStatus"
 ).textContent=
-"🧵 Fiber Line Mode: ম্যাপে একের পর এক ক্লিক করুন।";
+"🧵 এখন ম্যাপে Fiber-এর রাস্তার উপর একের পর এক ট্যাপ করুন।";
 
 }
 
 
-function addDrawPoint(ll){
+function drawTemporaryLine(){
 
-drawPoints.push(
-[
-ll.lat,
-ll.lng
-]
-);
-
-
-if(drawLayer){
+if(tempLine){
 
 map.removeLayer(
-drawLayer
+tempLine
 );
 
 }
 
 
-drawLayer=
+if(
+linePoints.length<2
+)return;
+
+
+tempLine=
 L.polyline(
-drawPoints,
+linePoints,
 {
+
 color:"#22c55e",
+
 weight:6,
-opacity:.9
+
+dashArray:"10 7"
+
 }
 ).addTo(map);
 
 
-if(drawPoints.length>=2){
+let length=
+calculateLineLength();
 
-const meters=
-calculateLength();
 
 document.getElementById(
-"status"
+"lineStatus"
 ).textContent=
-"🧵 Fiber: "+
-Math.round(meters)+
+"🧵 "+
+linePoints.length+
+" points • "+
+Math.round(length)+
 " meter";
 
-
-if(
-confirm(
-"এই Fiber Line Save করবেন?\n\n"+
-"Length: "+
-Math.round(meters)+
-" meter"
-)
-){
-
-saveLine();
-
-}
-
-}
-
 }
 
 
-function calculateLength(){
+/* LINE DISTANCE */
+
+function distance(a,b){
+
+const R=6371000;
+
+const rad=
+x=>
+x*Math.PI/180;
+
+const dLat=
+rad(
+b[0]-a[0]
+);
+
+const dLon=
+rad(
+b[1]-a[1]
+);
+
+const x=
+Math.sin(dLat/2)*
+Math.sin(dLat/2)+
+Math.cos(
+rad(a[0])
+)*
+Math.cos(
+rad(b[0])
+)*
+Math.sin(dLon/2)*
+Math.sin(dLon/2);
+
+return 2*
+R*
+Math.asin(
+Math.sqrt(x)
+);
+
+}
+
+
+function calculateLineLength(){
 
 let total=0;
 
 for(
 let i=1;
-i<drawPoints.length;
+i<linePoints.length;
 i++
 ){
 
-total+=map.distance(
-drawPoints[i-1],
-drawPoints[i]
+total+=
+distance(
+linePoints[i-1],
+linePoints[i]
 );
 
 }
@@ -1758,20 +2261,105 @@ return total;
 }
 
 
+/* UNDO */
+
+function undoLine(){
+
+if(
+linePoints.length
+){
+
+linePoints.pop();
+
+drawTemporaryLine();
+
+}
+
+}
+
+
+/* CANCEL */
+
+function cancelLine(){
+
+drawingLine=false;
+
+linePoints=[];
+
+if(tempLine){
+
+map.removeLayer(
+tempLine
+);
+
+tempLine=null;
+
+}
+
+document.getElementById(
+"linePanel"
+).classList.remove(
+"show"
+);
+
+}
+
+
+/* SAVE LINE */
+
 async function saveLine(){
 
-if(drawPoints.length<2){
+if(
+linePoints.length<2
+){
+
+alert(
+"⚠️ কমপক্ষে ২টি Point দিয়ে Fiber Line আঁকুন।"
+);
 
 return;
 
 }
 
 
-const meters=
-calculateLength();
+const length=
+calculateLineLength();
+
+
+if(
+!confirm(
+"এই Fiber Line Save করবেন?\n\n"+
+"মোট: "+
+Math.round(length)+
+" meter"
+)
+){
+
+return;
+
+}
 
 
 try{
+
+const body={
+
+name:
+"Fiber Line",
+
+path:
+linePoints,
+
+length_m:
+Math.round(
+length*10
+)/10,
+
+created_by:
+user.id
+
+};
+
 
 const r=
 await api(
@@ -1786,18 +2374,7 @@ headers:{
 },
 
 body:
-JSON.stringify({
-
-name:
-"Fiber Line",
-
-path:
-drawPoints,
-
-length_m:
-Math.round(meters)
-
-})
+JSON.stringify(body)
 
 }
 );
@@ -1812,44 +2389,23 @@ await r.text()
 }
 
 
-const saved=
-(await r.json())[0];
-
-lines.unshift(saved);
-
-drawSavedLine(saved);
-
-drawing=false;
-
-drawPoints=[];
-
-
-if(drawLayer){
-
-map.removeLayer(
-drawLayer
+alert(
+"✅ Fiber Line Save হয়েছে\n"+
+"Length: "+
+Math.round(length)+
+" meter"
 );
 
-drawLayer=null;
 
-}
+cancelLine();
 
-
-updateDashboard();
-
-
-document.getElementById(
-"status"
-).textContent=
-"✅ Fiber Line Saved: "+
-Math.round(meters)+
-" meter";
+await loadData();
 
 
 }catch(e){
 
 alert(
-"❌ Line Save Failed:\n"+
+"❌ Fiber Line Save হয়নি:\n"+
 e.message
 );
 
@@ -1858,42 +2414,24 @@ e.message
 }
 
 
-function drawSavedLine(line){
+/* START */
 
 if(
-!line.path ||
-line.path.length<2
-)return;
+token &&
+user
+){
 
+showApp();
 
-const layer=
-L.polyline(
-line.path,
-{
-color:"#22c55e",
-weight:5,
-opacity:.85
-}
-).addTo(map);
+}else{
 
-
-layer.bindPopup(
-"🧵 Fiber Line<br>"+
-"📏 "+
-Number(
-line.length_m||0
-)+
-" meter"
+document.getElementById(
+"loginScreen"
+).classList.remove(
+"hide"
 );
 
 }
-
-
-/* START */
-
-initMap();
-
-checkLogin();
 
 </script>
 
