@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>SAM Network Map</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<style>
+:root{--bg:#090d12;--card:#111821;--card2:#18212b;--text:#f5f7fa;--muted:#9ca8b5;--accent:#16a34a;--border:#263241}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+header{position:sticky;top:0;z-index:1000;background:rgba(9,13,18,.96);border-bottom:1px solid var(--border)}
+.nav{max-width:1200px;margin:auto;padding:10px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.logo{font-size:19px;font-weight:900;white-space:nowrap}.logo span{color:#22c55e}
+.search{flex:1;min-width:160px}.search input{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:22px;background:#0f151c;color:#fff;outline:0}
+button{color:#fff;cursor:pointer;font-weight:700;border:1px solid var(--border);border-radius:9px;padding:10px 12px;background:var(--card2)}
+.primary{background:var(--accent);border-color:var(--accent)}
+#map{height:calc(100vh - 108px);min-height:500px}
+.panel{position:absolute;z-index:900;top:120px;left:10px;width:305px;max-width:calc(100% - 20px);background:rgba(13,19,26,.96);border:1px solid var(--border);border-radius:14px;padding:12px;box-shadow:0 10px 30px #0008}
+.panel h3{margin:0 0 8px}.row{display:flex;gap:6px}.row>*{flex:1}.status{font-size:12px;color:var(--muted);line-height:1.4;margin-top:8px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:9px}.stat{background:#151e28;border:1px solid var(--border);border-radius:8px;padding:7px;text-align:center}.stat b{display:block;font-size:16px}.stat span{font-size:10px;color:var(--muted)}
+.legend{position:absolute;z-index:900;right:10px;bottom:14px;background:rgba(13,19,26,.95);padding:9px;border:1px solid var(--border);border-radius:10px;font-size:11px;line-height:1.8}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.modal{position:fixed;inset:0;background:#0009;display:none;align-items:flex-end;z-index:2000}.modal.open{display:flex}.box{width:min(520px,100%);background:#101820;border:1px solid var(--border);border-radius:17px 17px 0 0;padding:15px;max-height:90vh;overflow:auto}.box h2{margin:0 0 10px}.box label{display:block;color:var(--muted);font-size:12px;margin:8px 0 4px}.box input,.box textarea,.box select{width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:#0d141c;color:#fff}.box textarea{min-height:70px}.actions{display:flex;gap:7px;margin-top:12px}.actions button{flex:1}.close{background:#27313d}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#101820;color:#fff}.leaflet-popup-content{margin:11px}.popup-title{font-weight:800}.popup-meta{font-size:12px;color:#aeb8c4;line-height:1.5}
+@media(max-width:650px){.logo{font-size:16px}.panel{top:116px;width:calc(100% - 20px)}#map{height:calc(100vh - 101px)}}
+</style>
+</head>
+<body>
+<header><div class="nav">
+<div class="logo">SAM <span>NETWORK MAP</span></div>
+<div class="search"><input id="search" placeholder="পয়েন্ট / ঠিকানা খুঁজুন..." oninput="filterPoints()"></div>
+<button onclick="locateMe()">📍 GPS</button><button class="primary" onclick="openAdd()">＋ পয়েন্ট</button>
+</div></header>
+<div id="map"></div>
+<div class="panel">
+<h3>🧵 Fiber Network</h3>
+<div class="row"><button class="primary" onclick="startLine()">🧵 লাইন আঁকুন</button><button onclick="cancelLine()">✕ বাতিল</button></div>
+<div class="status" id="status">＋ পয়েন্ট চাপুন অথবা GPS ব্যবহার করুন।</div>
+<div class="stats"><div class="stat"><b id="pointCount">0</b><span>পয়েন্ট</span></div><div class="stat"><b id="lineCount">0</b><span>লাইন</span></div><div class="stat"><b id="totalKm">0</b><span>কিমি</span></div></div>
+</div>
+<div class="legend">
+<div><i class="dot" style="background:#22c55e"></i>Fiber Drop</div>
+<div><i class="dot" style="background:#f59e0b"></i>Box / Splitter</div>
+<div><i class="dot" style="background:#2563eb"></i>OLT</div>
+<div><i class="dot" style="background:#a855f7"></i>Customer</div>
+<div><i class="dot" style="background:#ef4444"></i>Problem</div>
+</div>
+<div class="modal" id="modal"><div class="box">
+<h2>📍 Network Point</h2>
+<label>ধরন</label><select id="ptype"><option value="fiber_drop">🟢 Fiber Drop</option><option value="box">🟠 Box / Splitter</option><option value="olt">🔵 OLT</option><option value="customer">🟣 Customer</option><option value="problem">🔴 Problem</option></select>
+<label>নাম</label><input id="pname" placeholder="যেমন: Box-01 / Rahim">
+<label>ঠিকানা</label><input id="paddress" placeholder="ঠিকানা">
+<label>Fiber length (মিটার)</label><input id="plen" type="number" min="0" placeholder="যেমন 250">
+<label>নোট</label><textarea id="pnote" placeholder="অতিরিক্ত তথ্য"></textarea>
+<div class="actions"><button class="close" onclick="closeModal()">বন্ধ</button><button class="primary" onclick="savePoint()">Save Point</button></div>
+<div class="status" id="modalStatus"></div>
+</div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+const SUPABASE_URL="https://cuzgpesjgjxogmbzbxhf.supabase.co";
+const SUPABASE_KEY="PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
+let map,meMarker,points=[],lines=[],lineMode=false,lineCoords=[],lineLayer,pendingLatLng;
+const colors={fiber_drop:"#22c55e",box:"#f59e0b",olt:"#2563eb",customer:"#a855f7",problem:"#ef4444"};
+const names={fiber_drop:"Fiber Drop",box:"Box / Splitter",olt:"OLT",customer:"Customer",problem:"Problem"};
+function api(path,opt={}){const h=Object.assign({"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"},opt.headers||{});return fetch(SUPABASE_URL+"/rest/v1/"+path,Object.assign({},opt,{headers:h}));}
+function init(){map=L.map("map").setView([23.8103,90.4125],13);L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);map.on("click",e=>{if(lineMode)addLinePoint(e.latlng);});loadData();}
+function markerIcon(type){const c=colors[type]||"#fff";return L.divIcon({className:"",html:`<div style="width:18px;height:18px;border-radius:50%;background:${c};border:3px solid white;box-shadow:0 2px 8px #0008"></div>`,iconSize:[18,18],iconAnchor:[9,9]});}
+function esc(s){return String(s||"").replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]));}
+function addPointMarker(p){const m=L.marker([p.latitude,p.longitude],{icon:markerIcon(p.point_type)}).addTo(map);m._pointId=p.id;m.bindPopup(`<div class="popup-title">${names[p.point_type]||p.point_type}: ${esc(p.name||"Unnamed")}</div><div class="popup-meta">${esc(p.address||"")}<br>Fiber: ${p.fiber_length||0} m<br>${esc(p.note||"")}</div>`);return m;}
+async function loadData(){try{const r=await api("network_points?select=*&order=created_at.desc");if(r.ok){points=await r.json();points.forEach(addPointMarker)}const lr=await api("fiber_lines?select=*&order=created_at.desc");if(lr.ok){lines=await lr.json();lines.forEach(drawSavedLine)}updateStats()}catch(e){document.getElementById("status").textContent="Cloud load failed: "+e.message;}}
+function updateStats(){document.getElementById("pointCount").textContent=points.length;document.getElementById("lineCount").textContent=lines.length;document.getElementById("totalKm").textContent=(lines.reduce((a,x)=>a+Number(x.length_m||0),0)/1000).toFixed(2);}
+function openAdd(){pendingLatLng=null;document.getElementById("modalStatus").textContent="ম্যাপে ক্লিক করে জায়গা বাছুন, অথবা GPS দিয়ে বর্তমান জায়গা নিন।";document.getElementById("modal").classList.add("open");map.once("click",e=>pendingLatLng=e.latlng);}
+function closeModal(){document.getElementById("modal").classList.remove("open");}
+function savePoint(){if(!pendingLatLng){navigator.geolocation.getCurrentPosition(p=>{pendingLatLng={lat:p.coords.latitude,lng:p.coords.longitude};doSavePoint()},()=>document.getElementById("modalStatus").textContent="GPS পাওয়া যায়নি। Location অনুমতি দিন বা ম্যাপে ক্লিক করুন.",{enableHighAccuracy:true,timeout:10000});}else doSavePoint();}
+async function doSavePoint(){const body={name:document.getElementById("pname").value.trim(),point_type:document.getElementById("ptype").value,latitude:pendingLatLng.lat,longitude:pendingLatLng.lng,fiber_length:Number(document.getElementById("plen").value||0),address:document.getElementById("paddress").value.trim(),note:document.getElementById("pnote").value.trim()};document.getElementById("modalStatus").textContent="Saving...";try{const r=await api("network_points",{method:"POST",headers:{"Prefer":"return=representation"},body:JSON.stringify(body)});if(!r.ok)throw new Error(await r.text());const saved=(await r.json())[0];points.unshift(saved);addPointMarker(saved);updateStats();closeModal()}catch(e){document.getElementById("modalStatus").textContent="Save failed: "+e.message;}}
+function locateMe(){navigator.geolocation.getCurrentPosition(p=>{const ll=[p.coords.latitude,p.coords.longitude];map.setView(ll,17);if(meMarker)meMarker.setLatLng(ll);else meMarker=L.circleMarker(ll,{radius:8,color:"#fff",weight:3,fillColor:"#06b6d4",fillOpacity:1}).addTo(map).bindPopup("📍 আপনার বর্তমান লোকেশন").openPopup()},()=>alert("GPS/Location অনুমতি দিন।"),{enableHighAccuracy:true,timeout:10000});}
+function startLine(){lineMode=!lineMode;lineCoords=[];if(lineLayer){map.removeLayer(lineLayer);lineLayer=null}document.getElementById("status").textContent=lineMode?"🧵 ম্যাপে একের পর এক ক্লিক করুন। ২+ পয়েন্ট হলে Save হবে।":"লাইন মোড বন্ধ।";}
+function cancelLine(){lineMode=false;lineCoords=[];if(lineLayer){map.removeLayer(lineLayer);lineLayer=null}document.getElementById("status").textContent="লাইন বাতিল।";}
+function addLinePoint(ll){lineCoords.push([ll.lat,ll.lng]);if(lineLayer)map.removeLayer(lineLayer);lineLayer=L.polyline(lineCoords,{color:"#22c55e",weight:5}).addTo(map);if(lineCoords.length>=2)document.getElementById("status").textContent=`🧵 ${lineCoords.length} points • ${Math.round(lineLength())} m`;if(lineCoords.length>=2&&confirm("এই Fiber line Save করবেন?"))saveLine();}
+function lineLength(){return lineCoords.slice(1).reduce((s,x,i)=>s+map.distance(lineCoords[i],x),0);}
+async function saveLine(){if(lineCoords.length<2)return;const len=lineLength();try{const r=await api("fiber_lines",{method:"POST",headers:{"Prefer":"return=representation"},body:JSON.stringify({name:"Fiber Line",path:lineCoords,length_m:Math.round(len)})});if(!r.ok)throw new Error(await r.text());const saved=(await r.json())[0];lines.unshift(saved);drawSavedLine(saved);updateStats();lineMode=false;lineCoords=[];if(lineLayer){map.removeLayer(lineLayer);lineLayer=null}document.getElementById("status").textContent=`✅ Fiber line saved: ${Math.round(len)} m`;}catch(e){alert("Line save failed: "+e.message);}}
+function drawSavedLine(x){if(x.path&&x.path.length>1)L.polyline(x.path,{color:"#22c55e",weight:5,opacity:.85}).addTo(map).bindPopup(`🧵 Fiber Line<br>${Number(x.length_m||0)} m`);}
+function filterPoints(){const q=document.getElementById("search").value.toLowerCase().trim();if(!q)return;const p=points.find(x=>(x.name||"").toLowerCase().includes(q)||(x.address||"").toLowerCase().includes(q)||(x.note||"").toLowerCase().includes(q));if(p){map.setView([p.latitude,p.longitude],17);Object.values(map._layers).find(x=>x._pointId===p.id)?.openPopup();}}
+init();
+</script>
+</body>
+</html>
